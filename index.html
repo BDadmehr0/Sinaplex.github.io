@@ -1,1 +1,431 @@
-<P>salam</P>
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080b16">
+  <meta name="description" content="Sina Plex — توسعه‌دهنده بازی با Unity و برنامه‌نویس C#">
+  <title>Sina Plex | Unity Game Developer</title>
+  <style>
+    #ambient-canvas { position:fixed; inset:0; width:100%; height:100%; z-index:-1; pointer-events:none; opacity:.9; }
+    body { position:relative; }
+    main, .nav-wrap, footer { position:relative; z-index:1; }
+    .scroll-progress { position:fixed; top:0; right:0; height:3px; width:100%; transform-origin:right center; transform:scaleX(0); z-index:99; background:linear-gradient(90deg,#56e0e0,#5c8dff,#9c76ff); box-shadow:0 0 14px #5c8dff88; }
+    #cursor-trail { position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:4; }
+    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap');
+    :root {
+      --bg:#080b16; --panel:rgba(18,24,43,.72); --text:#f3f5ff; --muted:#a5aec8;
+      --blue:#5c8dff; --cyan:#56e0e0; --line:rgba(157,178,255,.16);
+      --radius:22px; --max:1120px;
+    }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; scroll-padding-top:90px; }
+    body {
+      margin:0; color:var(--text); font-family:"Vazirmatn",Tahoma,sans-serif;
+      background:
+        radial-gradient(ellipse at 78% 10%, rgba(52,91,204,.19), transparent 34%),
+        radial-gradient(ellipse at 12% 48%, rgba(31,194,195,.09), transparent 30%), var(--bg);
+      line-height:1.8; overflow-x:hidden;
+    }
+    body::before {
+      content:""; position:fixed; inset:0; pointer-events:none; opacity:.14; z-index:-1;
+      background-image:linear-gradient(rgba(140,165,255,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(140,165,255,.12) 1px,transparent 1px);
+      background-size:48px 48px; mask-image:linear-gradient(to bottom,black,transparent 85%);
+    }
+    a { color:inherit; text-decoration:none; }
+    button { font:inherit; }
+    .wrap { width:min(var(--max),calc(100% - 40px)); margin-inline:auto; }
+    .nav-wrap { position:sticky; top:12px; z-index:20; padding-top:12px; }
+    nav {
+      display:flex; align-items:center; justify-content:space-between; gap:20px;
+      padding:12px 18px; border:1px solid var(--line); border-radius:18px;
+      background:rgba(8,11,22,.78); backdrop-filter:blur(18px);
+      box-shadow:0 10px 40px rgba(0,0,0,.18);
+    }
+    .brand { display:flex; align-items:center; gap:10px; font-weight:800; direction:ltr; letter-spacing:.3px; }
+    .brand-mark {
+      display:grid; place-items:center; width:36px; height:36px; border-radius:12px;
+      background:linear-gradient(135deg,var(--blue),#7b5cff); box-shadow:0 0 24px #5c8dff55;
+      font-size:17px;
+    }
+    .nav-links { display:flex; gap:22px; color:var(--muted); font-size:13px; }
+    .nav-links a:hover { color:var(--text); }
+    .nav-cta,.btn {
+      display:inline-flex; justify-content:center; align-items:center; gap:9px; border:1px solid var(--line);
+      border-radius:12px; padding:10px 16px; color:var(--text); background:rgba(255,255,255,.04);
+      transition:transform .2s,border-color .2s,background .2s; cursor:pointer;
+    }
+    .nav-cta:hover,.btn:hover { transform:translateY(-2px); border-color:#6c91ff99; }
+    .btn.primary { background:linear-gradient(120deg,#477aff,#795cff); border-color:transparent; box-shadow:0 8px 28px #4d73ff38; }
+    .hero { min-height:660px; display:grid; grid-template-columns:1.1fr .9fr; align-items:center; gap:42px; padding-block:80px 65px; }
+    .eyebrow { color:var(--cyan); font-size:13px; font-weight:600; display:flex; align-items:center; gap:9px; }
+    .dot { width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 14px var(--cyan); }
+    h1 { font-size:clamp(38px,5.5vw,68px); line-height:1.25; letter-spacing:-1.8px; margin:18px 0; }
+    .gradient-text { background:linear-gradient(100deg,#fff 10%,#8db1ff 52%,#62e4e0); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .hero p { max-width:610px; color:var(--muted); font-size:16px; margin:0 0 26px; }
+    .hero-actions { display:flex; flex-wrap:wrap; gap:12px; }
+    .quick-stats { display:flex; gap:28px; flex-wrap:wrap; margin-top:34px; }
+    .stat strong { display:block; font-size:22px; direction:ltr; text-align:right; }
+    .stat span { font-size:12px; color:var(--muted); }
+    .scene { height:430px; position:relative; display:grid; place-items:center; perspective:1000px; }
+    /* The large blue orb has been removed; subtle rings keep the scene dimensional. */
+    .ring { position:absolute; width:370px;height:140px;border:1px solid #6b9aff80;border-radius:50%; transform:rotate(-27deg) rotateX(58deg); box-shadow:0 0 24px #5078ff18; }
+    .ring.r2 { width:420px;height:190px; transform:rotate(42deg) rotateX(65deg); border-color:#54e4df55; }
+    .cube-wrap { width:150px;height:150px; position:relative; transform-style:preserve-3d; animation:spin 18s linear infinite; }
+    .cube-face { position:absolute; width:150px;height:150px; border:1px solid #8ddfffc7; background:linear-gradient(145deg,rgba(48,104,190,.42),rgba(13,29,56,.78) 55%,rgba(35,205,207,.18)); box-shadow:inset 0 0 28px #5c8dff22, inset 0 0 2px #b6ffffaa, 0 0 20px #577dff1c; backdrop-filter:blur(2px); display:grid;place-items:center; font-size:clamp(18px,3vw,30px);font-weight:800;letter-spacing:1px;color:#e2fbff;text-shadow:0 0 14px #56e0e0aa,0 2px 5px #071020; backface-visibility:visible; }
+    .front { transform:translateZ(75px); } .back { transform:rotateY(180deg) translateZ(75px); }
+    .right { transform:rotateY(90deg) translateZ(75px); } .left { transform:rotateY(-90deg) translateZ(75px); }
+    .top { transform:rotateX(90deg) translateZ(75px); } .bottom { transform:rotateX(-90deg) translateZ(75px); }
+    .float-card { position:absolute; padding:10px 14px; background:rgba(13,19,37,.85); border:1px solid var(--line); border-radius:13px; backdrop-filter:blur(12px); font-size:12px; box-shadow:0 15px 35px #0003; }
+    .fc1 { top:62px;right:0; } .fc2 { bottom:55px;left:0; direction:ltr; }
+    .section { padding:68px 0; }
+    .section-head { display:flex; align-items:end; justify-content:space-between; gap:24px; margin-bottom:28px; }
+    .section-kicker { color:var(--cyan); font-size:12px; font-weight:700; }
+    h2 { margin:4px 0 0; font-size:clamp(27px,3vw,38px); line-height:1.4; }
+    .section-head p { color:var(--muted); max-width:490px; font-size:13px; margin:0; }
+    .glass { background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); backdrop-filter:blur(15px); }
+    .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+    .about-card { padding:26px; }
+    .about-card p { color:var(--muted); font-size:14px; margin:12px 0 0; }
+    .mini-label { display:inline-flex; align-items:center; gap:8px; color:#c7d4ff; font-size:12px; padding:6px 10px; border:1px solid var(--line); border-radius:9px; }
+    .skills { display:flex; flex-wrap:wrap; gap:10px; margin-top:20px; }
+    .skill { font-size:12px; color:#dce5ff; padding:7px 11px; background:#718dff13; border:1px solid #718dff2b; border-radius:10px; }
+    .project-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .project { overflow:hidden; transition:transform .25s,border-color .25s; }
+    .project:hover { transform:translateY(-5px); border-color:#789aff55; }
+    .project-art { height:170px; display:grid; place-items:center; position:relative; overflow:hidden; background:radial-gradient(circle at 50% 60%,#344f9d66,transparent 55%),linear-gradient(135deg,#151d38,#0d1223); border-bottom:1px solid var(--line); }
+    .project-art::before { content:""; position:absolute; inset:0; background:linear-gradient(135deg,transparent 48%,#8aa7ff10 49%,transparent 50%); background-size:24px 24px; }
+    .game-icon { font-size:54px; filter:drop-shadow(0 0 22px #6c91ff70); transform:translateZ(0); }
+    .art-tag { position:absolute; top:12px;right:12px; font-size:10px; padding:4px 8px; background:#080b16b8; border:1px solid var(--line); border-radius:8px; }
+    .project-body { padding:20px; }
+    .project-body h3 { margin:0 0 7px; font-size:17px; }
+    .project-body p { margin:0; min-height:76px; color:var(--muted); font-size:12px; }
+    .project-foot { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:18px; }
+    .text-link { color:#a9c1ff; font-size:12px; }
+    .text-link:hover { color:white; }
+    .project-stack { color:#8c98b7; font-size:10px; }
+    .process-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+    .process { padding:22px; }
+    .process-num { font-size:12px; color:var(--cyan); direction:ltr; text-align:right; }
+    .process h3 { margin:7px 0; font-size:16px; }
+    .process p { color:var(--muted); font-size:12px; margin:0; }
+    .contact { display:flex; align-items:center; justify-content:space-between; gap:26px; padding:32px; background:radial-gradient(ellipse at 90% 10%,#477aff21,transparent 55%),var(--panel); }
+    .contact p { color:var(--muted); font-size:13px; margin:8px 0 0; }
+    .contact-actions { display:flex; gap:10px; flex-wrap:wrap; }
+    footer { padding:28px 0 34px; color:#7f89a6; font-size:11px; }
+    .footer-inner { display:flex; justify-content:space-between; align-items:center; gap:18px; border-top:1px solid var(--line); padding-top:20px; }
+    .ltr { direction:ltr; unicode-bidi:plaintext; }
+    .reveal { opacity:0; transform:translateY(30px) scale(.985); transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1); }
+    .reveal.visible { opacity:1; transform:translateY(0) scale(1); }
+    .project:nth-child(2) { transition-delay:.08s; } .project:nth-child(3) { transition-delay:.16s; }
+    .about-card:nth-child(2) { transition-delay:.1s; }
+    @keyframes spin { from { transform:rotateX(-18deg) rotateY(0deg) rotateZ(0deg); } to { transform:rotateX(342deg) rotateY(360deg) rotateZ(360deg); } }
+    @keyframes float { 0%,100% { transform:translateY(0) scale(1); } 50% { transform:translateY(-12px) scale(1.03); } }
+
+    .btn,.nav-cta,.project,.skill,.text-link,.nav-links a {
+      transition:transform .25s ease, border-color .25s ease, background .25s ease, box-shadow .25s ease, color .25s ease;
+    }
+    .btn:hover,.nav-cta:hover {
+      box-shadow:0 0 0 1px #79a0ff33,0 0 22px #5b83ff55,0 0 44px #4b6eff22;
+    }
+    .project:hover {
+      box-shadow:0 0 0 1px #7197ff25,0 0 30px #4f77ff24,0 18px 45px #0004;
+    }
+    .skill:hover {
+      border-color:#69dfe0aa; box-shadow:0 0 18px #56e0e044; color:#fff; transform:translateY(-2px);
+    }
+    .text-link:hover,.nav-links a:hover { text-shadow:0 0 15px #8baaffaa; }
+    .scene { transform-style:preserve-3d; }
+    .cube-wrap { will-change:transform; }
+    .scene::after {
+      content:""; position:absolute; width:180px; height:180px; border-radius:50%;
+      background:radial-gradient(circle,#4f7dff0b,transparent 72%); pointer-events:none;
+    }
+    .cube-face.front { background:linear-gradient(145deg,rgba(58,121,220,.58),rgba(12,30,56,.86) 65%,rgba(47,211,210,.24)); }
+    .cube-face.back { background:linear-gradient(145deg,rgba(39,91,170,.55),rgba(10,23,46,.9) 65%,rgba(67,198,210,.2)); }
+    .cube-face.right,.cube-face.left { color:#b8ffff; }
+    .cube-face.top,.cube-face.bottom { color:#c9d8ff; }
+    @media (pointer:coarse) {
+      .btn:hover,.nav-cta:hover,.project:hover,.skill:hover { transform:none; }
+    }
+
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; scroll-behavior:auto!important; } }
+    @media(max-width:850px) {
+      .nav-links { gap:12px; } .hero { grid-template-columns:1fr; padding-top:60px; gap:0; } .hero-copy { text-align:center; }
+      .hero-copy .eyebrow,.hero-actions,.quick-stats { justify-content:center; } .hero p { margin-inline:auto; }
+      .scene { height:350px; order:-1; } .ring { width:290px; } .ring.r2 { width:330px; }
+      .project-grid { grid-template-columns:repeat(2,1fr); }
+    }
+    @media(max-width:600px) {
+      .wrap { width:min(var(--max),calc(100% - 26px)); } .nav-wrap { top:6px;padding-top:6px; }
+      nav { padding:9px 11px; } .nav-links { display:none; } .nav-cta { padding:8px 10px;font-size:11px; }
+      .hero { padding-block:35px 35px; min-height:auto; } h1 { font-size:42px; } .hero p { font-size:14px; }
+      .scene { height:300px; } .cube-wrap,.cube-face { width:112px;height:112px; } .cube-face { font-size:20px; letter-spacing:0; } .front {transform:translateZ(56px)} .back {transform:rotateY(180deg) translateZ(56px)}
+      .right {transform:rotateY(90deg) translateZ(56px)} .left {transform:rotateY(-90deg) translateZ(56px)} .top {transform:rotateX(90deg) translateZ(56px)} .bottom {transform:rotateX(-90deg) translateZ(56px)}
+      .float-card { font-size:10px; } .fc1 { right:-2px;top:35px; } .fc2 { left:-2px;bottom:30px; }
+      .section { padding:46px 0; } .section-head { align-items:start; flex-direction:column; gap:8px; }
+      .about-grid,.project-grid,.process-grid { grid-template-columns:1fr; } .project-body p { min-height:0; }
+      .contact { padding:24px; align-items:start; flex-direction:column; } .footer-inner { align-items:start; flex-direction:column; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="ambient-canvas" aria-hidden="true"></canvas>
+  <div class="scroll-progress" aria-hidden="true"></div>
+  <canvas id="cursor-trail" aria-hidden="true"></canvas>
+  <div class="wrap nav-wrap">
+    <nav aria-label="ناوبری اصلی">
+      <a class="brand" href="#home"><span class="brand-mark">S</span><span>SINA PLEX</span></a>
+      <div class="nav-links">
+        <a href="#about">درباره من</a><a href="#projects">پروژه‌ها</a><a href="#skills">مهارت‌ها</a><a href="#contact">ارتباط</a>
+      </div>
+      <a class="nav-cta" href="#projects">دیدن نمونه‌کارها <span>↗</span></a>
+    </nav>
+  </div>
+
+  <main>
+    <section class="wrap hero" id="home">
+      <div class="hero-copy reveal">
+        <div class="eyebrow"><span class="dot"></span> توسعه‌دهنده بازی و برنامه‌نویس</div>
+        <h1>توسعه بازی با<br><span class="gradient-text">Unity و C#</span></h1>
+        <p>من سینا هستم؛ توسعه‌دهنده بازی با تمرکز بر Unity و C#. روی پیاده‌سازی مکانیک‌های گیم‌پلی، رفتار دشمن‌ها و سیستم‌های موردنیاز بازی کار می‌کنم و سعی می‌کنم هر پروژه را به محصولی قابل‌اجرا و قابل‌ارائه تبدیل کنم.</p>
+        <div class="hero-actions">
+          <a class="btn primary" href="#projects">مشاهده پروژه‌ها <span>↙</span></a>
+          <a class="btn" href="https://github.com/Sinaplex" target="_blank" rel="noreferrer">گیت‌هاب من <span class="ltr">↗</span></a>
+        </div>
+        <div class="quick-stats">
+          <div class="stat"><strong>Unity</strong><span>موتور بازی‌سازی</span></div>
+          <div class="stat"><strong>C#</strong><span>زبان اصلی برنامه‌نویسی</span></div>
+          <div class="stat"><strong>2D / 3D</strong><span>توسعه بازی</span></div>
+        </div>
+      </div>
+      <div class="scene reveal" aria-label="تصویر سه‌بعدی تزئینی">
+        <div class="ring"></div><div class="ring r2"></div>
+        <div class="cube-wrap" role="img" aria-label="مکعب سه‌بعدی مهارت‌ها: C Sharp، Unity، هوش مصنوعی، طراحی دوبعدی و سه‌بعدی، بازی و کدنویسی">
+          <div class="cube-face front">C#</div><div class="cube-face back">UNITY</div>
+          <div class="cube-face right">AI</div><div class="cube-face left">2D / 3D</div>
+          <div class="cube-face top">GAMES</div><div class="cube-face bottom">CODE</div>
+        </div>
+        
+      </div>
+    </section>
+
+    <section class="section wrap" id="about">
+      <div class="section-head reveal">
+        <div><div class="section-kicker">01 / ABOUT</div><h2>درباره من</h2></div>
+        <p>ترکیبی از برنامه‌نویسی، حل مسئله و ساخت تجربه‌هایی که بشود واقعاً آن‌ها را بازی کرد.</p>
+      </div>
+      <div class="about-grid">
+        <article class="glass about-card reveal">
+          <p>من با نام <b class="ltr">Sina Plex</b> فعالیت می‌کنم و تمرکزم روی توسعه بازی با Unity و C# است. تجربه‌ام بیشتر در ساخت بازی‌های دوبعدی، طراحی سیستم‌های گیم‌پلی، پیاده‌سازی رفتار دشمن‌ها و توسعه قابلیت‌های موردنیاز هر پروژه است.</p>
+        </article>
+        <article class="glass about-card reveal" id="skills">
+          <span class="mini-label">⌘ <span>ابزارها و مهارت‌ها</span></span>
+          <div class="skills">
+            <span class="skill">Unity</span><span class="skill">C#</span><span class="skill">2D Game Dev</span>
+            <span class="skill">Gameplay Systems</span><span class="skill">AI & Pathfinding</span>
+            <span class="skill">UI / UX</span><span class="skill">Git & GitHub</span><span class="skill">Debugging</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section wrap" id="projects">
+      <div class="section-head reveal">
+        <div><div class="section-kicker">02 / PROJECTS</div><h2>پروژه‌ها</h2></div>
+        <p>نمونه‌هایی از پروژه‌ها و سیستم‌هایی که با Unity و C# توسعه داده‌ام.</p>
+      </div>
+      <div class="project-grid">
+        <article class="glass project reveal">
+          <div class="project-art"><span class="art-tag">UNITY · 2D</span><div class="game-icon">♟</div></div>
+          <div class="project-body"><h3>Unity Patrol Enemy</h3><p>نمونه‌ای از ساخت دشمن گشت‌زن در بازی دوبعدی؛ مناسب برای نمایش منطق حرکت و رفتار پایه دشمن.</p><div class="project-foot"><a class="text-link" href="https://github.com/Sinaplex/Unity-Patrol-Enemy" target="_blank" rel="noreferrer">مشاهده در GitHub ↗</a><span class="project-stack">C# / Unity</span></div></div>
+        </article>
+        <article class="glass project reveal">
+          <div class="project-art"><span class="art-tag">GAME PROJECT</span><div class="game-icon">⌁</div></div>
+          <div class="project-body"><h3>Maze Adventure</h3><p>بازی ماز با مراحل مختلف، دشمن‌ها، تله‌ها و قابلیت‌های بازیکن. این بخش را با توضیح و تصاویر پروژه خودت کامل کن.</p><div class="project-foot"><a class="text-link" href="https://github.com/Sinaplex" target="_blank" rel="noreferrer">مشاهده پروژه‌ها ↗</a><span class="project-stack">Gameplay</span></div></div>
+        </article>
+        <article class="glass project reveal">
+          <div class="project-art"><span class="art-tag">ONLINE · 3D</span><div class="game-icon">◎</div></div>
+          <div class="project-body"><h3>Online Game Prototype</h3><p>نمونه‌کار چندنفره برای نمایش سیستم شبکه، حرکت بازیکن و هماهنگی وضعیت بازی؛ در صورت انتشار، لینک مستقیم را اضافه کن.</p><div class="project-foot"><a class="text-link" href="https://github.com/Sinaplex" target="_blank" rel="noreferrer">دیدن GitHub ↗</a><span class="project-stack">Unity / Mirror</span></div></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section wrap" id="contact">
+      <div class="glass contact reveal">
+        <div><div class="section-kicker">04 / CONTACT</div><h2>ایده‌ای برای ساختن داری؟</h2><p>برای همکاری، پروژه‌های بازی‌سازی یا دیدن کدها و نمونه‌کارها با من در ارتباط باش.</p></div>
+        <div class="contact-actions">
+          <a class="btn primary" href="https://github.com/Sinaplex" target="_blank" rel="noreferrer">GitHub <span class="ltr">↗</span></a>
+          <a class="btn" href="https://www.youtube.com/@Sina_Plex" target="_blank" rel="noreferrer">YouTube <span class="ltr">↗</span></a>
+          <button class="btn" id="copyEmail" type="button">کپی ایمیل</button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="wrap"><div class="footer-inner"><span>© <span id="year"></span> Sina Plex — ساخته‌شده با علاقه به بازی‌سازی</span><a href="#home">بازگشت به بالا ↑</a></div></footer>
+
+  <script>
+    // برای فعال کردن دکمه ایمیل، آدرس خودت را در خط زیر قرار بده.
+    const contactEmail = "YOUR_EMAIL@example.com";
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Background particles and a short-lived mouse-light trail (fine pointers only).
+    (() => {
+      const canvas = document.getElementById("ambient-canvas");
+      const ctx = canvas.getContext("2d", { alpha: true });
+      const trailCanvas = document.getElementById("cursor-trail");
+      const trailCtx = trailCanvas.getContext("2d", { alpha: true });
+      const progress = document.querySelector(".scroll-progress");
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+      let w = 0, h = 0, dpr = 1, scrollY = window.scrollY || 0;
+      let mouse = { x: -9999, y: -9999, active: false };
+      let particles = [], trail = [], lastTrailFrame = 0;
+      const MAX_TRAIL_AGE = 680;
+
+      function resize() {
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        w = window.innerWidth; h = window.innerHeight;
+        for (const c of [canvas, trailCanvas]) {
+          c.width = Math.floor(w * dpr); c.height = Math.floor(h * dpr);
+          c.style.width = w + "px"; c.style.height = h + "px";
+        }
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        trailCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const count = Math.min(w < 600 ? 66 : 145, Math.max(w < 600 ? 44 : 90, Math.floor(w / (w < 600 ? 7 : 9))));
+        particles = Array.from({ length: count }, () => ({
+          x: Math.random() * w, y: Math.random() * h,
+          vx: (Math.random() - .5) * .34, vy: (Math.random() - .5) * .34,
+          r: Math.random() * 1.35 + .75, phase: Math.random() * Math.PI * 2
+        }));
+      }
+
+      function drawParticles() {
+        ctx.clearRect(0, 0, w, h);
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          p.phase += .012;
+          if (!reducedMotion) {
+            p.x += p.vx + Math.sin(p.phase) * .08;
+            p.y += p.vy + Math.cos(p.phase * .7) * .08;
+          }
+          if (mouse.active && finePointer && !reducedMotion) {
+            const dx = p.x - mouse.x, dy = p.y - mouse.y, dist = Math.hypot(dx, dy);
+            if (dist < 125 && dist > .1) {
+              const force = (1 - dist / 125) * .22;
+              p.vx += dx / dist * force; p.vy += dy / dist * force;
+            }
+          }
+          p.vx *= .994; p.vy *= .994;
+          const speed = Math.hypot(p.vx, p.vy);
+          if (speed > .8) { p.vx = p.vx / speed * .8; p.vy = p.vy / speed * .8; }
+          if (p.x < -10) p.x = w + 10; if (p.x > w + 10) p.x = -10;
+          if (p.y < -10) p.y = h + 10; if (p.y > h + 10) p.y = -10;
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = i % 4 === 0 ? "rgba(86,224,224,.78)" : "rgba(125,157,255,.72)";
+          ctx.fill();
+          for (let j = i + 1; j < particles.length; j++) {
+            const q = particles[j], dist = Math.hypot(p.x - q.x, p.y - q.y);
+            if (dist < 92) {
+              ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
+              ctx.strokeStyle = `rgba(91,174,232,${(1 - dist / 92) * .19})`;
+              ctx.lineWidth = .65; ctx.stroke();
+            }
+          }
+        }
+        if (!reducedMotion) requestAnimationFrame(drawParticles);
+      }
+
+      function drawTrail(now) {
+        trailCtx.clearRect(0, 0, w, h);
+        trail = trail.filter(point => now - point.time < MAX_TRAIL_AGE);
+        for (let i = 1; i < trail.length; i++) {
+          const a = trail[i - 1], b = trail[i];
+          const alpha = Math.max(0, 1 - (now - b.time) / MAX_TRAIL_AGE);
+          trailCtx.beginPath(); trailCtx.moveTo(a.x, a.y); trailCtx.lineTo(b.x, b.y);
+          trailCtx.lineWidth = (1.2 + alpha * 2.2) * (i / trail.length);
+          trailCtx.lineCap = "round";
+          trailCtx.strokeStyle = `rgba(86,224,224,${alpha * .26})`;
+          trailCtx.shadowBlur = 9 * alpha; trailCtx.shadowColor = "#5c8dff";
+          trailCtx.stroke();
+        }
+        trailCtx.shadowBlur = 0;
+        if (trail.length && now - lastTrailFrame < MAX_TRAIL_AGE + 30) {
+          requestAnimationFrame(drawTrail);
+        } else {
+          lastTrailFrame = 0;
+        }
+      }
+
+      function updateScroll() {
+        scrollY = window.scrollY || 0;
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        progress.style.transform = `scaleX(${maxScroll > 0 ? scrollY / maxScroll : 0})`;
+        canvas.style.transform = `translateY(${Math.min(scrollY * -.025, -35)}px)`;
+      }
+
+      if (finePointer && !reducedMotion) {
+        window.addEventListener("pointermove", event => {
+          if (event.pointerType === "touch") return;
+          mouse.x = event.clientX; mouse.y = event.clientY; mouse.active = true;
+          trail.push({ x: event.clientX, y: event.clientY, time: performance.now() });
+          if (trail.length > 36) trail.shift();
+          if (!lastTrailFrame) {
+            lastTrailFrame = performance.now();
+            requestAnimationFrame(drawTrail);
+          }
+        }, { passive: true });
+        document.addEventListener("pointerleave", () => { mouse.active = false; });
+      } else {
+        trailCanvas.style.display = "none";
+      }
+      window.addEventListener("scroll", updateScroll, { passive: true });
+      window.addEventListener("resize", resize);
+      resize(); drawParticles(); updateScroll();
+    })();
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+
+
+    // Keep the cube's CSS rotation independent from pointer movement and hover effects.
+    const scene = document.querySelector(".scene");
+    if (scene && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      scene.addEventListener("mousemove", (event) => {
+        const rect = scene.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / rect.width - 0.5;
+        const y = (event.clientY - rect.top) / rect.height - 0.5;
+        scene.style.setProperty("--mx", `${x * 10}px`);
+        scene.style.setProperty("--my", `${y * 10}px`);
+      }, { passive: true });
+      scene.addEventListener("mouseleave", () => {
+        scene.style.setProperty("--mx", "0px");
+        scene.style.setProperty("--my", "0px");
+      });
+    }
+
+    document.getElementById("copyEmail").addEventListener("click", async () => {
+      const button = document.getElementById("copyEmail");
+      if (contactEmail === "YOUR_EMAIL@example.com") {
+        button.textContent = "ایمیل را در کد وارد کن";
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(contactEmail);
+        button.textContent = "کپی شد ✓";
+      } catch {
+        window.location.href = "mailto:" + contactEmail;
+      }
+      setTimeout(() => button.textContent = "کپی ایمیل", 2200);
+    });
+  </script>
+</body>
+</html>
