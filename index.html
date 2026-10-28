@@ -3,25 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#080b16">
+  <meta name="theme-color" content="#070a14">
   <meta name="description" content="Sina Plex؛ توسعه‌دهنده بازی با Unity و C#، علاقه‌مند به ساخت تجربه‌های دوبعدی و سه‌بعدی.">
   <meta property="og:title" content="Sina Plex | توسعه‌دهنده بازی">
   <meta property="og:description" content="نمونه‌کارها و مهارت‌های Sina Plex در توسعه بازی با Unity و C#.">
   <meta property="og:type" content="website">
   <title>Sina Plex | توسعه‌دهنده بازی با Unity و C#</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- ✅ فونت وزیرمتن از CDN (jsDelivr) + fallback گوگل -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap">
+
+  <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
-          fontFamily: { sans: ['Vazirmatn', 'Tahoma', 'sans-serif'] },
+          fontFamily: { sans: ['Vazirmatn', 'Tahoma', 'system-ui', 'sans-serif'] },
           colors: {
-            night: '#080b16',
+            night: '#070a14',
             panel: '#11182a',
             cyan: '#56e0e0',
             cobalt: '#5c8dff',
+            violet: '#9c76ff',
             muted: '#a5aec8'
           },
           boxShadow: {
@@ -32,44 +38,96 @@
       }
     };
   </script>
-  <script src="https://cdn.tailwindcss.com"></script>
   <script>document.documentElement.classList.add('js');</script>
+
   <style>
     :root {
       color-scheme: dark;
-      --bg: #080b16;
-      --panel: rgba(17, 24, 42, .72);
-      --line: rgba(157, 178, 255, .14);
+      --bg: #070a14;
       --cyan: #56e0e0;
       --blue: #5c8dff;
+      --violet: #9c76ff;
+      --line: rgba(157, 178, 255, .14);
+      --ease: cubic-bezier(.22, .75, .2, 1);
     }
+
     * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+
     body {
       position: relative;
       min-width: 320px;
       margin: 0;
       overflow-x: hidden;
-      color: #f3f5ff;
+      color: #f2f5ff;
       background:
-        radial-gradient(ellipse at 78% 8%, rgba(52, 91, 204, .20), transparent 34%),
-        radial-gradient(ellipse at 10% 48%, rgba(31, 194, 195, .08), transparent 30%),
+        radial-gradient(ellipse 70% 55% at 84% -8%, rgba(60, 96, 220, .24), transparent 62%),
+        radial-gradient(ellipse 60% 45% at 4% 42%, rgba(31, 194, 195, .10), transparent 62%),
         var(--bg);
-      font-family: "Vazirmatn", Tahoma, sans-serif;
-      line-height: 1.8;
+      font-family: "Vazirmatn", Tahoma, system-ui, sans-serif;
+      line-height: 1.85;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
+
+    /* گرید ظریف پس‌زمینه */
     body::before {
       position: fixed;
       z-index: 0;
       inset: 0;
       pointer-events: none;
       content: "";
-      opacity: .11;
       background-image:
-        linear-gradient(rgba(140, 165, 255, .14) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(140, 165, 255, .14) 1px, transparent 1px);
-      background-size: 48px 48px;
-      mask-image: linear-gradient(to bottom, #000, transparent 86%);
+        linear-gradient(rgba(140, 165, 255, .07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(140, 165, 255, .07) 1px, transparent 1px);
+      background-size: 56px 56px;
+      -webkit-mask-image: radial-gradient(ellipse 85% 65% at 50% 0%, #000 15%, transparent 78%);
+      mask-image: radial-gradient(ellipse 85% 65% at 50% 0%, #000 15%, transparent 78%);
     }
+
+    /* نورهای نرم و متحرک پس‌زمینه */
+    .aurora {
+      position: fixed;
+      z-index: 0;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .aurora span {
+      position: absolute;
+      display: block;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: .5;
+      will-change: transform;
+    }
+    .aurora span:nth-child(1) {
+      top: -12%; right: -6%;
+      width: 46vw; height: 46vw;
+      background: radial-gradient(circle, rgba(80, 120, 255, .38), transparent 68%);
+      animation: float-a 26s ease-in-out infinite;
+    }
+    .aurora span:nth-child(2) {
+      top: 38%; left: -14%;
+      width: 40vw; height: 40vw;
+      background: radial-gradient(circle, rgba(46, 200, 200, .22), transparent 68%);
+      animation: float-b 32s ease-in-out infinite;
+    }
+    .aurora span:nth-child(3) {
+      bottom: -18%; right: 22%;
+      width: 38vw; height: 38vw;
+      background: radial-gradient(circle, rgba(150, 100, 255, .22), transparent 68%);
+      animation: float-a 38s ease-in-out infinite reverse;
+    }
+    @keyframes float-a {
+      0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+      50% { transform: translate3d(-4%, 6%, 0) scale(1.12); }
+    }
+    @keyframes float-b {
+      0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+      50% { transform: translate3d(6%, -5%, 0) scale(1.08); }
+    }
+
     #ambient-canvas {
       position: fixed;
       z-index: 0;
@@ -77,8 +135,10 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
-      opacity: .62;
+      opacity: .55;
     }
+
+    /* نوار پیشرفت اسکرول */
     .scroll-progress {
       position: fixed;
       z-index: 100;
@@ -89,65 +149,154 @@
       transform-origin: right center;
       pointer-events: none;
       background: linear-gradient(90deg, #56e0e0, #5c8dff, #9c76ff);
-      box-shadow: 0 0 14px rgba(92, 141, 255, .55);
+      box-shadow: 0 0 16px rgba(92, 141, 255, .55);
+      transition: transform .1s linear;
     }
+
     .site-content { position: relative; z-index: 1; }
     a, button { -webkit-tap-highlight-color: transparent; }
     a:focus-visible, button:focus-visible {
       outline: 2px solid var(--cyan);
       outline-offset: 4px;
+      border-radius: 8px;
     }
+
+    /* ---------- کارت شیشه‌ای ---------- */
     .glass-panel {
+      position: relative;
       border: 1px solid var(--line);
-      background: linear-gradient(145deg, rgba(255, 255, 255, .045), rgba(255, 255, 255, .012)), var(--panel);
-      box-shadow: 0 24px 80px rgba(0, 0, 0, .23), inset 0 1px 0 rgba(255, 255, 255, .035);
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, .055), rgba(255, 255, 255, .012)),
+        rgba(17, 24, 42, .72);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .23), inset 0 1px 0 rgba(255, 255, 255, .045);
       -webkit-backdrop-filter: blur(18px);
       backdrop-filter: blur(18px);
     }
+
+    /* نور دنبال‌کننده موس روی پنل‌ها */
+    .spotlight { overflow: hidden; }
+    .spotlight::before {
+      position: absolute;
+      inset: 0;
+      content: "";
+      border-radius: inherit;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .35s ease;
+      background: radial-gradient(340px circle at var(--mx, 50%) var(--my, 0%), rgba(86, 224, 224, .13), transparent 68%);
+    }
+    .spotlight:hover::before { opacity: 1; }
+
+    /* ---------- برند ---------- */
     .brand-mark {
+      position: relative;
       display: grid;
-      width: 42px;
-      height: 42px;
+      width: 44px;
+      height: 44px;
       flex: none;
       place-items: center;
       border: 1px solid rgba(160, 202, 255, .35);
-      border-radius: 14px;
-      color: white;
+      border-radius: 15px;
+      color: #fff;
       background: linear-gradient(140deg, #5c8dff, #7654db 72%);
-      box-shadow: 0 0 26px rgba(92, 141, 255, .32);
+      box-shadow: 0 0 26px rgba(92, 141, 255, .35);
       font-size: 13px;
       font-weight: 800;
       letter-spacing: .04em;
       direction: ltr;
+      overflow: hidden;
     }
-    .nav-link { transition: color .2s ease; }
-    .nav-link:hover, .nav-link[aria-current="page"] { color: #fff; }
+    .brand-mark::after {
+      position: absolute;
+      inset: 0;
+      content: "";
+      background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, .5) 50%, transparent 70%);
+      transform: translateX(-130%);
+      animation: brand-shine 5.5s var(--ease) infinite;
+    }
+    @keyframes brand-shine {
+      0%, 60% { transform: translateX(-130%); }
+      85%, 100% { transform: translateX(130%); }
+    }
+
+    /* ---------- ناوبری ---------- */
+    .nav-link {
+      position: relative;
+      padding: .35rem 0;
+      color: #97a2be;
+      transition: color .22s ease;
+    }
+    .nav-link::after {
+      position: absolute;
+      right: 0;
+      bottom: -3px;
+      left: 0;
+      height: 2px;
+      border-radius: 2px;
+      content: "";
+      background: linear-gradient(90deg, var(--cyan), var(--blue));
+      transform: scaleX(0);
+      transform-origin: right center;
+      transition: transform .32s var(--ease);
+    }
+    .nav-link:hover, .nav-link.is-active { color: #fff; }
+    .nav-link:hover::after, .nav-link.is-active::after { transform: scaleX(1); }
+
+    /* منوی موبایل با انیمیشن ارتفاع */
+    #mobile-menu {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height .4s var(--ease), opacity .28s ease, margin .35s var(--ease);
+    }
+    #mobile-menu.is-open {
+      max-height: 340px;
+      opacity: 1;
+    }
+
+    /* ---------- دکمه‌ها ---------- */
     .btn-primary, .btn-secondary {
+      position: relative;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: .6rem;
       min-height: 48px;
+      overflow: hidden;
       border: 1px solid transparent;
       border-radius: 14px;
-      padding: .7rem 1.15rem;
+      padding: .7rem 1.25rem;
       font-size: .88rem;
       font-weight: 700;
-      transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease, background .22s ease;
+      transition: transform .24s var(--ease), box-shadow .24s var(--ease), border-color .24s ease, background .24s ease;
     }
     .btn-primary {
-      color: #07131b;
-      background: linear-gradient(120deg, #77fff0, #55d9de 52%, #89a9ff);
-      box-shadow: 0 10px 30px rgba(46, 198, 201, .20);
+      color: #06121a;
+      background: linear-gradient(120deg, #7cfff2, #55d9de 52%, #8fadff);
+      box-shadow: 0 10px 30px rgba(46, 198, 201, .22);
     }
+    .btn-primary::after {
+      position: absolute;
+      inset: 0;
+      content: "";
+      background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, .65) 50%, transparent 70%);
+      transform: translateX(-130%);
+      transition: transform .75s var(--ease);
+    }
+    .btn-primary:hover::after { transform: translateX(130%); }
     .btn-secondary {
       color: #e9edff;
       border-color: rgba(157, 178, 255, .19);
       background: rgba(255, 255, 255, .04);
     }
     .btn-primary:hover, .btn-secondary:hover { transform: translateY(-2px); }
-    .btn-primary:hover { box-shadow: 0 14px 36px rgba(46, 198, 201, .32); }
-    .btn-secondary:hover { border-color: rgba(86, 224, 224, .55); background: rgba(86, 224, 224, .07); }
+    .btn-primary:hover { box-shadow: 0 16px 40px rgba(46, 198, 201, .34); }
+    .btn-secondary:hover {
+      border-color: rgba(86, 224, 224, .55);
+      background: rgba(86, 224, 224, .08);
+    }
+
+    /* ---------- تایپوگرافی ---------- */
     .eyebrow {
       display: inline-flex;
       align-items: center;
@@ -155,7 +304,6 @@
       color: #81eeea;
       font-size: .8rem;
       font-weight: 700;
-      letter-spacing: .01em;
     }
     .eyebrow-dot {
       width: 8px;
@@ -164,13 +312,35 @@
       border-radius: 999px;
       background: var(--cyan);
       box-shadow: 0 0 14px rgba(86, 224, 224, .9);
+      animation: pulse-dot 2.4s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.35); opacity: .65; }
     }
     .gradient-text {
       color: transparent;
-      background: linear-gradient(95deg, #fff 8%, #9db8ff 52%, #72eee5 96%);
+      background: linear-gradient(95deg, #fff 5%, #9db8ff 40%, #72eee5 70%, #b7a5ff 100%);
+      background-size: 220% 100%;
       -webkit-background-clip: text;
       background-clip: text;
+      animation: shine-text 9s linear infinite;
     }
+    @keyframes shine-text {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 220% 50%; }
+    }
+    .section-kicker { color: #72e8e2; font-size: .75rem; font-weight: 700; letter-spacing: .04em; }
+    .section-title {
+      color: #f4f6ff;
+      font-size: clamp(1.75rem, 3.4vw, 2.45rem);
+      font-weight: 800;
+      line-height: 1.4;
+      letter-spacing: -.03em;
+    }
+    .section-copy { max-width: 580px; color: #a5aec8; font-size: .92rem; line-height: 2; }
+
+    /* ---------- صحنه هیرو ---------- */
     .hero-scene {
       position: relative;
       display: grid;
@@ -183,12 +353,17 @@
     .hero-scene::after {
       position: absolute;
       z-index: -1;
-      width: 190px;
-      height: 190px;
+      width: 200px;
+      height: 200px;
       border-radius: 999px;
       content: "";
-      background: radial-gradient(circle, rgba(79, 125, 255, .18), transparent 72%);
-      filter: blur(4px);
+      background: radial-gradient(circle, rgba(79, 125, 255, .22), transparent 72%);
+      filter: blur(6px);
+      animation: glow-pulse 6s ease-in-out infinite;
+    }
+    @keyframes glow-pulse {
+      0%, 100% { transform: scale(1); opacity: .85; }
+      50% { transform: scale(1.15); opacity: 1; }
     }
     .orbit {
       position: absolute;
@@ -245,71 +420,161 @@
       border-radius: 12px;
       padding: .45rem .72rem;
       color: #dce5ff;
-      background: rgba(10, 16, 31, .83);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, .25);
+      background: rgba(10, 16, 31, .84);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, .28);
       -webkit-backdrop-filter: blur(12px);
       backdrop-filter: blur(12px);
       font-size: .7rem;
       font-weight: 600;
+      animation: chip-float 7s ease-in-out infinite;
     }
     .float-chip--one { top: 20%; right: 3%; }
-    .float-chip--two { bottom: 18%; left: 2%; direction: ltr; }
-    .float-chip--three { top: 18%; left: 7%; }
-    .status-pulse { position: relative; width: 7px; height: 7px; border-radius: 50%; background: #56e0e0; box-shadow: 0 0 10px #56e0e0; }
-    .section-kicker { color: #72e8e2; font-size: .75rem; font-weight: 700; letter-spacing: .04em; }
-    .section-title { color: #f4f6ff; font-size: clamp(1.75rem, 3.4vw, 2.45rem); font-weight: 800; line-height: 1.35; letter-spacing: -.03em; }
-    .section-copy { max-width: 580px; color: #a5aec8; font-size: .92rem; line-height: 2; }
-    .skill-chip, .tech-chip {
+    .float-chip--two { bottom: 18%; left: 2%; direction: ltr; animation-delay: -2.4s; }
+    .float-chip--three { top: 18%; left: 7%; animation-delay: -4.6s; }
+    @keyframes chip-float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-9px); }
+    }
+    .status-pulse {
+      position: relative;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #56e0e0;
+      box-shadow: 0 0 10px #56e0e0;
+    }
+
+    /* ---------- نوار متحرک تکنولوژی ---------- */
+    .marquee {
+      position: relative;
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+      mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+    }
+    .marquee__track {
+      display: flex;
+      width: max-content;
+      align-items: center;
+      gap: 2.75rem;
+      animation: marquee 34s linear infinite;
+    }
+    .marquee:hover .marquee__track { animation-play-state: paused; }
+    .marquee__item {
       display: inline-flex;
       align-items: center;
+      gap: .55rem;
+      color: #8e9ab8;
+      font-size: .82rem;
+      font-weight: 700;
+      white-space: nowrap;
+      transition: color .25s ease;
+    }
+    .marquee__item::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--cyan), var(--blue));
+      box-shadow: 0 0 10px rgba(86, 224, 224, .7);
+    }
+    .marquee__item:hover { color: #e8f6ff; }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ---------- چیپ‌های مهارت ---------- */
+    .skill-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
       border: 1px solid rgba(115, 151, 255, .23);
-      border-radius: 10px;
+      border-radius: 11px;
+      padding: .5rem .85rem;
       color: #dce5ff;
       background: rgba(92, 141, 255, .09);
-      font-size: .76rem;
+      font-size: .78rem;
       font-weight: 600;
+      transition: transform .22s var(--ease), border-color .22s ease, background .22s ease;
     }
-    .skill-chip { padding: .5rem .8rem; }
+    .skill-chip:hover {
+      transform: translateY(-3px);
+      border-color: rgba(86, 224, 224, .55);
+      background: rgba(86, 224, 224, .12);
+    }
     .skill-chip--primary {
       border-color: rgba(86, 224, 224, .45);
       color: #a9fffa;
-      background: linear-gradient(135deg, rgba(27, 157, 155, .2), rgba(92, 141, 255, .12));
+      background: linear-gradient(135deg, rgba(27, 157, 155, .22), rgba(92, 141, 255, .14));
     }
+
+    /* ---------- کارت پروژه ---------- */
     .project-card {
+      position: relative;
       overflow: hidden;
       border: 1px solid rgba(157, 178, 255, .13);
       border-radius: 22px;
-      background: linear-gradient(150deg, rgba(22, 30, 53, .88), rgba(12, 17, 31, .92));
-      box-shadow: 0 16px 45px rgba(0, 0, 0, .16);
-      transition: transform .28s ease, border-color .28s ease, box-shadow .28s ease;
+      background: linear-gradient(150deg, rgba(22, 30, 53, .88), rgba(12, 17, 31, .94));
+      box-shadow: 0 16px 45px rgba(0, 0, 0, .18);
+      transition: transform .32s var(--ease), box-shadow .32s var(--ease);
+    }
+    .project-card::before {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      padding: 1px;
+      border-radius: inherit;
+      content: "";
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .35s ease;
+      background: linear-gradient(140deg, rgba(86, 224, 224, .75), rgba(92, 141, 255, .45), rgba(156, 118, 255, .3));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+    .project-card::after {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      content: "";
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .35s ease;
+      background: radial-gradient(280px circle at var(--mx, 50%) var(--my, 0%), rgba(86, 224, 224, .12), transparent 70%);
     }
     .project-card:hover {
-      transform: translateY(-5px);
-      border-color: rgba(120, 154, 255, .48);
-      box-shadow: 0 20px 50px rgba(0, 0, 0, .28), 0 0 28px rgba(79, 119, 255, .12);
+      transform: translateY(-6px);
+      box-shadow: 0 26px 60px rgba(0, 0, 0, .34), 0 0 34px rgba(79, 119, 255, .14);
     }
+    .project-card:hover::before, .project-card:hover::after { opacity: 1; }
+
     .project-cover {
       position: relative;
       display: block;
       overflow: hidden;
       aspect-ratio: 16 / 9;
-      background: #121a31;
+      background:
+        radial-gradient(120% 120% at 20% 0%, rgba(92, 141, 255, .28), transparent 60%),
+        radial-gradient(120% 120% at 90% 100%, rgba(86, 224, 224, .22), transparent 55%),
+        #121a31;
     }
     .project-cover::after {
       position: absolute;
       inset: 0;
       content: "";
       pointer-events: none;
-      background: linear-gradient(180deg, rgba(4, 7, 16, .14), transparent 38%, rgba(4, 7, 16, .48));
+      background: linear-gradient(180deg, rgba(4, 7, 16, .14), transparent 38%, rgba(4, 7, 16, .52));
     }
     .project-cover img {
       display: block;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform .6s cubic-bezier(.2, .7, .2, 1), filter .4s ease;
+      transition: transform .7s var(--ease), filter .4s ease;
     }
-    .project-card:hover .project-cover img { transform: scale(1.055); filter: saturate(1.08); }
+    .project-card:hover .project-cover img { transform: scale(1.07); filter: saturate(1.1); }
+
     .project-type {
       position: absolute;
       z-index: 1;
@@ -318,8 +583,8 @@
       border: 1px solid rgba(255, 255, 255, .2);
       border-radius: 9px;
       padding: .28rem .62rem;
-      color: white;
-      background: rgba(8, 11, 22, .67);
+      color: #fff;
+      background: rgba(8, 11, 22, .68);
       -webkit-backdrop-filter: blur(12px);
       backdrop-filter: blur(12px);
       font-size: .68rem;
@@ -331,61 +596,141 @@
       bottom: 13px;
       left: 14px;
       display: grid;
-      width: 34px;
-      height: 34px;
+      width: 36px;
+      height: 36px;
       place-items: center;
-      border: 1px solid rgba(255, 255, 255, .18);
+      border: 1px solid rgba(255, 255, 255, .2);
       border-radius: 11px;
-      color: white;
-      background: rgba(8, 11, 22, .62);
+      color: #fff;
+      background: rgba(8, 11, 22, .65);
       opacity: 0;
-      transform: translateY(4px);
-      transition: opacity .2s ease, transform .2s ease;
+      transform: translateY(6px);
+      transition: opacity .25s ease, transform .25s var(--ease);
     }
-    .project-card:hover .project-open, .project-cover:focus-visible .project-open { opacity: 1; transform: translateY(0); }
-    .project-body { padding: 1.2rem; }
-    .project-description { min-height: 4.4rem; color: #a5aec8; font-size: .81rem; line-height: 1.9; }
-    .tech-chip { border-color: rgba(157, 178, 255, .13); padding: .3rem .55rem; color: #9ca9c7; background: rgba(255, 255, 255, .035); font-size: .66rem; }
+    .project-card:hover .project-open,
+    .project-cover:focus-visible .project-open { opacity: 1; transform: translateY(0); }
+
+    .project-body { position: relative; z-index: 3; padding: 1.25rem; }
+    .project-description { min-height: 4.4rem; color: #a5aec8; font-size: .81rem; line-height: 1.95; }
+    .tech-chip {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid rgba(157, 178, 255, .13);
+      border-radius: 10px;
+      padding: .3rem .58rem;
+      color: #9ca9c7;
+      background: rgba(255, 255, 255, .035);
+      font-size: .66rem;
+      font-weight: 600;
+    }
+
+    /* ---------- فیلترها ---------- */
     .filter-chip {
+      position: relative;
       border: 1px solid rgba(157, 178, 255, .16);
       border-radius: 999px;
-      padding: .42rem .85rem;
+      padding: .45rem .95rem;
       color: #a5aec8;
       background: rgba(255, 255, 255, .025);
       font-size: .76rem;
       font-weight: 600;
-      transition: color .2s ease, background .2s ease, border-color .2s ease;
+      transition: color .22s ease, background .22s ease, border-color .22s ease, transform .22s var(--ease);
     }
+    .filter-chip:hover { transform: translateY(-2px); color: #dffffc; }
     .filter-chip:hover, .filter-chip.is-active {
-      border-color: rgba(86, 224, 224, .42);
+      border-color: rgba(86, 224, 224, .45);
       color: #dffffc;
-      background: rgba(86, 224, 224, .09);
+      background: rgba(86, 224, 224, .1);
     }
+
+    /* ---------- شبکه‌های اجتماعی ---------- */
     .social-link {
       display: inline-flex;
-      min-width: 118px;
+      min-width: 120px;
       align-items: center;
       justify-content: center;
       gap: .55rem;
       border: 1px solid rgba(157, 178, 255, .15);
       border-radius: 13px;
-      padding: .7rem .9rem;
+      padding: .72rem .9rem;
       color: #e7eaff;
       background: rgba(255, 255, 255, .04);
       font-size: .78rem;
       font-weight: 600;
-      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+      transition: transform .24s var(--ease), border-color .24s ease, background .24s ease;
     }
-    .social-link:hover { transform: translateY(-2px); border-color: rgba(86, 224, 224, .4); background: rgba(86, 224, 224, .07); }
+    .social-link:hover {
+      transform: translateY(-3px);
+      border-color: rgba(86, 224, 224, .45);
+      background: rgba(86, 224, 224, .08);
+    }
+
+    /* ---------- ریویل ---------- */
     .reveal { opacity: 1; transform: none; }
-    .js .reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s cubic-bezier(.2, .7, .2, 1), transform .7s cubic-bezier(.2, .7, .2, 1); }
+    .js .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .8s var(--ease) var(--d, 0s), transform .8s var(--ease) var(--d, 0s);
+    }
     .js .reveal.is-visible { opacity: 1; transform: translateY(0); }
-    .project-card:nth-child(2) { transition-delay: .06s; }
-    .project-card:nth-child(3) { transition-delay: .12s; }
+
+    /* ---------- توست ---------- */
+    .toast {
+      position: fixed;
+      z-index: 120;
+      bottom: 1.6rem;
+      right: 0;
+      left: 0;
+      width: fit-content;
+      margin-inline: auto;
+      transform: translateY(24px);
+      border: 1px solid rgba(86, 224, 224, .38);
+      border-radius: 14px;
+      padding: .68rem 1.15rem;
+      color: #d8fffd;
+      background: rgba(10, 16, 31, .94);
+      box-shadow: 0 18px 44px rgba(0, 0, 0, .45);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      font-size: .8rem;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s ease, transform .3s var(--ease);
+    }
+    .toast.is-visible { opacity: 1; transform: translateY(0); }
+
+    /* ---------- دکمه بازگشت به بالا ---------- */
+    .to-top {
+      position: fixed;
+      z-index: 90;
+      bottom: 1.5rem;
+      left: 1.25rem;
+      display: grid;
+      width: 46px;
+      height: 46px;
+      place-items: center;
+      border: 1px solid rgba(157, 178, 255, .22);
+      border-radius: 14px;
+      color: #dbe6ff;
+      background: rgba(12, 18, 33, .85);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, .35);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(14px);
+      transition: opacity .3s ease, transform .3s var(--ease), border-color .25s ease, color .25s ease;
+    }
+    .to-top.is-visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    .to-top:hover { border-color: rgba(86, 224, 224, .6); color: var(--cyan); }
+
     @keyframes cube-spin {
       from { transform: rotateX(-18deg) rotateY(0deg) rotateZ(0deg); }
       to { transform: rotateX(342deg) rotateY(360deg) rotateZ(360deg); }
     }
+
+    /* ---------- موبایل ---------- */
     @media (max-width: 640px) {
       .hero-scene { min-height: 250px; }
       .cube { width: 98px; height: 98px; }
@@ -400,22 +745,33 @@
       .float-chip--two { left: 0; }
       .float-chip--three { left: 2%; }
       .project-description { min-height: 0; }
+      .to-top { bottom: 1rem; left: 1rem; }
     }
+
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
       .js .reveal { opacity: 1; transform: none; }
     }
   </style>
 </head>
+
 <body class="min-h-screen bg-night font-sans text-white antialiased selection:bg-cyan/30 selection:text-white">
   <canvas id="ambient-canvas" aria-hidden="true"></canvas>
+  <div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
   <div class="scroll-progress" aria-hidden="true"></div>
-  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:right-4 focus:top-4 focus:z-[110] focus:rounded-xl focus:bg-cyan focus:px-4 focus:py-2 focus:text-night">رفتن به محتوای اصلی</a>
+
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:right-4 focus:top-4 focus:z-[130] focus:rounded-xl focus:bg-cyan focus:px-4 focus:py-2 focus:font-bold focus:text-night">رفتن به محتوای اصلی</a>
 
   <div class="site-content">
+    <!-- ================= هدر ================= -->
     <header class="sticky top-3 z-50 mx-auto mt-3 w-[calc(100%_-_1.25rem)] max-w-6xl">
       <nav class="glass-panel flex items-center justify-between gap-3 rounded-2xl p-2.5 shadow-panel md:px-4" aria-label="ناوبری اصلی">
-        <a class="flex min-w-0 items-center gap-3" href="#home" aria-label="Sina Plex، خانه">
+        <a class="group flex min-w-0 items-center gap-3" href="#home" aria-label="Sina Plex، خانه">
           <span class="brand-mark">SP</span>
           <span class="min-w-0 leading-tight">
             <span class="block truncate text-sm font-extrabold tracking-wide text-white" dir="ltr">Sina Plex</span>
@@ -423,11 +779,11 @@
           </span>
         </a>
 
-        <div class="hidden items-center gap-7 text-[13px] font-medium text-slate-400 lg:flex">
-          <a class="nav-link" href="#about">درباره من</a>
-          <a class="nav-link" href="#projects">نمونه‌کارها</a>
-          <a class="nav-link" href="#skills">مهارت‌ها</a>
-          <a class="nav-link" href="#contact">ارتباط</a>
+        <div class="hidden items-center gap-6 text-[13px] font-medium lg:flex">
+          <a class="nav-link" href="#about" data-spy>درباره من</a>
+          <a class="nav-link" href="#projects" data-spy>نمونه‌کارها</a>
+          <a class="nav-link" href="#process" data-spy>روش کار</a>
+          <a class="nav-link" href="#contact" data-spy>ارتباط</a>
         </div>
 
         <div class="flex items-center gap-2">
@@ -440,28 +796,33 @@
           </button>
         </div>
       </nav>
-      <div id="mobile-menu" class="glass-panel mt-2 hidden rounded-2xl p-2 shadow-panel lg:hidden">
+
+      <div id="mobile-menu" class="glass-panel mt-2 rounded-2xl p-2 shadow-panel lg:hidden">
         <a class="block rounded-xl px-4 py-3 text-sm text-slate-300 transition hover:bg-white/5 hover:text-white" href="#about">درباره من</a>
         <a class="block rounded-xl px-4 py-3 text-sm text-slate-300 transition hover:bg-white/5 hover:text-white" href="#projects">نمونه‌کارها</a>
-        <a class="block rounded-xl px-4 py-3 text-sm text-slate-300 transition hover:bg-white/5 hover:text-white" href="#skills">مهارت‌ها</a>
+        <a class="block rounded-xl px-4 py-3 text-sm text-slate-300 transition hover:bg-white/5 hover:text-white" href="#process">روش کار</a>
         <a class="block rounded-xl px-4 py-3 text-sm text-slate-300 transition hover:bg-white/5 hover:text-white" href="#contact">ارتباط</a>
       </div>
     </header>
 
     <main id="main">
-      <section id="home" class="mx-auto grid max-w-6xl items-center gap-10 px-5 pb-16 pt-12 sm:px-7 md:min-h-[690px] md:grid-cols-[1.05fr_.95fr] md:gap-12 md:pb-20 md:pt-16 lg:px-8">
+      <!-- ================= هیرو ================= -->
+      <section id="home" class="mx-auto grid max-w-6xl items-center gap-10 px-5 pb-14 pt-12 sm:px-7 md:min-h-[690px] md:grid-cols-[1.05fr_.95fr] md:gap-12 md:pb-20 md:pt-16 lg:px-8">
         <div class="reveal relative z-10 text-center md:text-right">
           <div class="eyebrow mb-5 justify-center md:justify-start">
             <span class="eyebrow-dot" aria-hidden="true"></span>
             توسعه‌دهنده بازی و برنامه‌نویس
           </div>
+
           <h1 class="mx-auto max-w-2xl text-[2.7rem] font-extrabold leading-[1.25] tracking-[-.055em] text-white sm:text-5xl md:mx-0 md:text-[3.8rem] lg:text-[4.25rem]">
             ایده‌ها را به<br>
             <span class="gradient-text">بازی تبدیل می‌کنم.</span>
           </h1>
+
           <p class="mx-auto mt-6 max-w-xl text-sm leading-8 text-slate-300 sm:text-base md:mx-0">
             من سینا هستم؛ با <span class="font-semibold text-white" dir="ltr">Unity</span> و <span class="font-semibold text-white" dir="ltr">C#</span> بازی می‌سازم و روی مکانیک‌های گیم‌پلی، رفتار دشمن‌ها و تجربه‌های دوبعدی و سه‌بعدی تمرکز دارم.
           </p>
+
           <div class="mt-8 flex flex-wrap justify-center gap-3 md:justify-start">
             <a class="btn-primary" href="#projects">
               دیدن نمونه‌کارها
@@ -469,17 +830,27 @@
             </a>
             <a class="btn-secondary" href="#contact">ارتباط با من <span aria-hidden="true">↗</span></a>
           </div>
+
           <div class="mt-10 flex flex-wrap justify-center gap-x-8 gap-y-4 border-t border-white/10 pt-6 md:justify-start">
-            <div class="text-center md:text-right"><strong class="block text-lg font-extrabold text-white" dir="ltr">Unity</strong><span class="text-xs text-slate-400">موتور بازی‌سازی</span></div>
-            <div class="text-center md:text-right"><strong class="block text-lg font-extrabold text-white" dir="ltr">C#</strong><span class="text-xs text-slate-400">برنامه‌نویسی گیم‌پلی</span></div>
-            <div class="text-center md:text-right"><strong class="block text-lg font-extrabold text-white" dir="ltr">2D / 3D</strong><span class="text-xs text-slate-400">توسعه بازی</span></div>
+            <div class="text-center md:text-right">
+              <strong class="block text-lg font-extrabold text-white" dir="ltr">Unity</strong>
+              <span class="text-xs text-slate-400">موتور بازی‌سازی</span>
+            </div>
+            <div class="text-center md:text-right">
+              <strong class="block text-lg font-extrabold text-white" dir="ltr">C#</strong>
+              <span class="text-xs text-slate-400">برنامه‌نویسی گیم‌پلی</span>
+            </div>
+            <div class="text-center md:text-right">
+              <strong class="block text-lg font-extrabold text-white" dir="ltr">2D / 3D</strong>
+              <span class="text-xs text-slate-400">توسعه بازی</span>
+            </div>
           </div>
         </div>
 
-        <div class="reveal relative mx-auto w-full max-w-xl">
+        <div class="reveal relative mx-auto w-full max-w-xl" style="--d:.12s">
           <div class="absolute -inset-8 -z-10 rounded-full bg-blue-500/10 blur-3xl" aria-hidden="true"></div>
-          <div class="glass-panel overflow-hidden rounded-[28px] p-4 sm:p-5">
-            <div class="flex items-center justify-between gap-3 border-b border-white/10 px-2 pb-4">
+          <div class="glass-panel spotlight overflow-hidden rounded-[28px] p-4 sm:p-5" id="hero-panel">
+            <div class="relative z-10 flex items-center justify-between gap-3 border-b border-white/10 px-2 pb-4">
               <div class="flex items-center gap-3">
                 <span class="grid h-9 w-9 place-items-center rounded-xl border border-cyan/20 bg-cyan/10 text-cyan">
                   <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M8 7H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h3m8-12h3a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-3M9 12h6m-6 4h6M9 4h6v16H9z" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -489,75 +860,119 @@
                   <p class="text-[10px] text-slate-500" dir="ltr">Unity · C# · Game Dev</p>
                 </div>
               </div>
-              <div class="flex items-center gap-1.5" aria-hidden="true"><span class="h-2 w-2 rounded-full bg-rose-400/80"></span><span class="h-2 w-2 rounded-full bg-amber-300/80"></span><span class="h-2 w-2 rounded-full bg-emerald-300/80"></span></div>
+              <div class="flex items-center gap-1.5" aria-hidden="true">
+                <span class="h-2 w-2 rounded-full bg-rose-400/80"></span>
+                <span class="h-2 w-2 rounded-full bg-amber-300/80"></span>
+                <span class="h-2 w-2 rounded-full bg-emerald-300/80"></span>
+              </div>
             </div>
 
             <div class="hero-scene" role="img" aria-label="مکعب سه‌بعدی با نمادهای Unity، C# و بازی‌سازی">
               <div class="orbit" aria-hidden="true"></div>
               <div class="orbit orbit--second" aria-hidden="true"></div>
               <div class="cube" aria-hidden="true">
-                <div class="cube-face cube-front">C#</div><div class="cube-face cube-back">UNITY</div>
-                <div class="cube-face cube-right">AI</div><div class="cube-face cube-left">2D / 3D</div>
-                <div class="cube-face cube-top">GAMES</div><div class="cube-face cube-bottom">CODE</div>
+                <div class="cube-face cube-front">C#</div>
+                <div class="cube-face cube-back">UNITY</div>
+                <div class="cube-face cube-right">AI</div>
+                <div class="cube-face cube-left">2D / 3D</div>
+                <div class="cube-face cube-top">GAMES</div>
+                <div class="cube-face cube-bottom">CODE</div>
               </div>
               <span class="float-chip float-chip--one"><span class="status-pulse" aria-hidden="true"></span> گیم‌پلی</span>
               <span class="float-chip float-chip--two">C# <span class="text-cyan">//</span> Unity</span>
               <span class="float-chip float-chip--three"><span class="text-cyan">✦</span> 2D / 3D</span>
             </div>
 
-            <div class="grid grid-cols-3 gap-2 border-t border-white/10 pt-4 text-center">
-              <div><span class="block text-xs font-bold text-slate-200">مکانیک</span><span class="text-[10px] text-slate-500">Gameplay</span></div>
-              <div><span class="block text-xs font-bold text-slate-200">رفتار دشمن</span><span class="text-[10px] text-slate-500">AI & Logic</span></div>
-              <div><span class="block text-xs font-bold text-slate-200">بازی‌سازی</span><span class="text-[10px] text-slate-500">Prototyping</span></div>
+            <div class="relative z-10 grid grid-cols-3 gap-2 border-t border-white/10 pt-4 text-center">
+              <div>
+                <span class="block text-xs font-bold text-slate-200">مکانیک</span>
+                <span class="text-[10px] text-slate-500" dir="ltr">Gameplay</span>
+              </div>
+              <div>
+                <span class="block text-xs font-bold text-slate-200">رفتار دشمن</span>
+                <span class="text-[10px] text-slate-500" dir="ltr">AI &amp; Logic</span>
+              </div>
+              <div>
+                <span class="block text-xs font-bold text-slate-200">بازی‌سازی</span>
+                <span class="text-[10px] text-slate-500" dir="ltr">Prototyping</span>
+              </div>
             </div>
           </div>
-          <div class="pointer-events-none absolute -bottom-4 -left-3 hidden h-16 w-16 rounded-2xl border border-cyan/10 bg-cyan/5 blur-[1px] sm:block" aria-hidden="true"></div>
         </div>
       </section>
 
+      <!-- ================= نوار متحرک ================= -->
+      <div class="marquee mx-auto max-w-6xl border-y border-white/[.07] py-4" dir="ltr" aria-hidden="true">
+        <div class="marquee__track">
+          <span class="marquee__item">Unity Engine</span>
+          <span class="marquee__item">C#</span>
+          <span class="marquee__item">Gameplay Systems</span>
+          <span class="marquee__item">Enemy AI</span>
+          <span class="marquee__item">2D / 3D</span>
+          <span class="marquee__item">Python</span>
+          <span class="marquee__item">PHP</span>
+          <span class="marquee__item">SQL</span>
+          <span class="marquee__item">Prototyping</span>
+          <span class="marquee__item">Unity Engine</span>
+          <span class="marquee__item">C#</span>
+          <span class="marquee__item">Gameplay Systems</span>
+          <span class="marquee__item">Enemy AI</span>
+          <span class="marquee__item">2D / 3D</span>
+          <span class="marquee__item">Python</span>
+          <span class="marquee__item">PHP</span>
+          <span class="marquee__item">SQL</span>
+          <span class="marquee__item">Prototyping</span>
+        </div>
+      </div>
+
+      <!-- ================= درباره + مهارت‌ها ================= -->
       <section id="about" class="mx-auto max-w-6xl scroll-mt-28 px-5 py-14 sm:px-7 md:py-20 lg:px-8">
         <div class="mb-8 flex flex-col gap-3 md:mb-10 md:flex-row md:items-end md:justify-between">
           <div class="reveal">
             <p class="section-kicker">کمی درباره من</p>
             <h2 class="section-title mt-2">ترکیب منطق و خلاقیت</h2>
           </div>
-          <p class="section-copy reveal md:pb-1">از طراحی مکانیک تا پیاده‌سازی، به ساخت بازی‌هایی علاقه دارم که هم خوب کار کنند و هم تجربه‌ای به‌یادماندنی بسازند.</p>
+          <p class="section-copy reveal md:pb-1" style="--d:.08s">از طراحی مکانیک تا پیاده‌سازی، به ساخت بازی‌هایی علاقه دارم که هم خوب کار کنند و هم تجربه‌ای به‌یادماندنی بسازند.</p>
         </div>
+
         <div class="grid gap-4 md:grid-cols-[1.08fr_.92fr]">
-          <article class="glass-panel reveal rounded-3xl p-6 sm:p-8">
-            <div class="flex items-start gap-4">
+          <article class="glass-panel spotlight reveal rounded-3xl p-6 sm:p-8">
+            <div class="relative z-10 flex items-start gap-4">
               <span class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-blue-300/20 bg-blue-400/10 text-xl text-blue-200" aria-hidden="true">✦</span>
               <div>
                 <p class="section-kicker">سلام، من سینا هستم</p>
                 <h3 class="mt-1 text-xl font-extrabold text-white">توسعه‌دهنده بازی با Unity و C#</h3>
               </div>
             </div>
-            <p class="mt-5 text-sm leading-8 text-slate-300">
+            <p class="relative z-10 mt-5 text-sm leading-8 text-slate-300">
               با نام <b class="font-bold text-white" dir="ltr">Sina Plex</b> فعالیت می‌کنم. تمرکزم روی ساخت بازی‌های دوبعدی، طراحی سیستم‌های گیم‌پلی، پیاده‌سازی رفتار دشمن‌ها و توسعه قابلیت‌های موردنیاز هر پروژه است.
             </p>
-            <div class="mt-6 flex flex-wrap gap-2">
+            <div class="relative z-10 mt-6 flex flex-wrap gap-2">
               <span class="rounded-lg border border-white/10 bg-white/[.035] px-3 py-1.5 text-[11px] text-slate-300">طراحی مکانیک</span>
               <span class="rounded-lg border border-white/10 bg-white/[.035] px-3 py-1.5 text-[11px] text-slate-300">منطق بازی</span>
               <span class="rounded-lg border border-white/10 bg-white/[.035] px-3 py-1.5 text-[11px] text-slate-300">نمونه‌سازی</span>
             </div>
           </article>
 
-          <article id="skills" class="glass-panel reveal scroll-mt-28 rounded-3xl p-6 sm:p-8">
-            <div class="flex items-center justify-between gap-3">
-              <div><p class="section-kicker">ابزارهای من</p><h3 class="mt-1 text-xl font-extrabold text-white">مهارت‌ها</h3></div>
+          <article id="skills" class="glass-panel spotlight reveal scroll-mt-28 rounded-3xl p-6 sm:p-8" style="--d:.08s">
+            <div class="relative z-10 flex items-center justify-between gap-3">
+              <div>
+                <p class="section-kicker">ابزارهای من</p>
+                <h3 class="mt-1 text-xl font-extrabold text-white">مهارت‌ها</h3>
+              </div>
               <span class="grid h-11 w-11 place-items-center rounded-2xl border border-cyan/20 bg-cyan/10 text-cyan" aria-hidden="true">
                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-3-11-2 14" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </span>
             </div>
-            <p class="mt-3 text-sm leading-7 text-slate-400">ابزارها و زبان‌هایی که در مسیر توسعه و ساخت پروژه از آن‌ها استفاده می‌کنم.</p>
-            <div class="mt-6 flex flex-wrap gap-2.5">
+            <p class="relative z-10 mt-3 text-sm leading-7 text-slate-400">ابزارها و زبان‌هایی که در مسیر توسعه و ساخت پروژه از آن‌ها استفاده می‌کنم.</p>
+            <div class="relative z-10 mt-6 flex flex-wrap gap-2.5">
               <span class="skill-chip skill-chip--primary" dir="ltr">Unity</span>
               <span class="skill-chip skill-chip--primary" dir="ltr">C#</span>
               <span class="skill-chip" dir="ltr">Python</span>
               <span class="skill-chip" dir="ltr">PHP</span>
               <span class="skill-chip" dir="ltr">SQL</span>
             </div>
-            <div class="mt-7 rounded-2xl border border-cyan/10 bg-gradient-to-l from-cyan/[.08] to-blue-500/[.06] p-4">
+            <div class="relative z-10 mt-7 rounded-2xl border border-cyan/10 bg-gradient-to-l from-cyan/[.08] to-blue-500/[.06] p-4">
               <p class="text-xs font-bold text-slate-200">تمرکز اصلی</p>
               <p class="mt-1 text-xs leading-6 text-slate-400">سیستم‌های گیم‌پلی، کنترل بازیکن و رفتارهای پایه در بازی‌های Unity</p>
             </div>
@@ -565,6 +980,7 @@
         </div>
       </section>
 
+      <!-- ================= نمونه‌کارها ================= -->
       <section id="projects" class="mx-auto max-w-6xl scroll-mt-28 px-5 py-14 sm:px-7 md:py-20 lg:px-8">
         <div class="mb-8 flex flex-col gap-5 md:mb-10 md:flex-row md:items-end md:justify-between">
           <div class="reveal">
@@ -572,7 +988,7 @@
             <h2 class="section-title mt-2">نمونه‌کارها</h2>
             <p class="section-copy mt-3">پروژه‌ها و ایده‌هایی در مسیر بازی‌سازی با Unity؛ برای دیدن کدها، هر پروژه را در GitHub باز کن.</p>
           </div>
-          <a class="btn-secondary reveal w-fit" href="https://github.com/Sinaplex" target="_blank" rel="noreferrer">
+          <a class="btn-secondary reveal w-fit" href="https://github.com/Sinaplex" target="_blank" rel="noreferrer" style="--d:.08s">
             همه پروژه‌ها در GitHub
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.55.1.76-.24.76-.53v-2.08c-3.1.68-3.76-1.32-3.76-1.32-.5-1.3-1.24-1.65-1.24-1.65-1.02-.7.08-.69.08-.69 1.13.08 1.72 1.16 1.72 1.16 1 1.71 2.62 1.22 3.26.93.1-.72.39-1.22.71-1.5-2.48-.28-5.09-1.24-5.09-5.51 0-1.22.44-2.22 1.16-3-.12-.28-.5-1.42.11-2.96 0 0 .95-.3 3.05 1.15a10.6 10.6 0 0 1 5.55 0c2.1-1.45 3.04-1.15 3.04-1.15.61 1.54.23 2.68.12 2.96.72.78 1.15 1.78 1.15 3.01 0 4.28-2.61 5.22-5.1 5.5.4.35.75 1.03.75 2.08V22c0 .29.2.64.77.53A11.1 11.1 0 0 0 12 .9Z"/></svg>
           </a>
@@ -598,7 +1014,11 @@
                 <span class="pt-1 text-[11px] font-bold text-slate-600" dir="ltr">01</span>
               </div>
               <p class="project-description mt-2">نمونه‌ای از طراحی رفتار پایه دشمن در بازی دوبعدی و پیاده‌سازی حرکت گشت‌زنی با Unity و C#.</p>
-              <div class="mt-4 flex flex-wrap gap-1.5"><span class="tech-chip" dir="ltr">Unity</span><span class="tech-chip" dir="ltr">C#</span><span class="tech-chip">رفتار دشمن</span></div>
+              <div class="mt-4 flex flex-wrap gap-1.5">
+                <span class="tech-chip" dir="ltr">Unity</span>
+                <span class="tech-chip" dir="ltr">C#</span>
+                <span class="tech-chip">رفتار دشمن</span>
+              </div>
               <div class="mt-5 flex items-center justify-between gap-3 border-t border-white/[.07] pt-4">
                 <a class="inline-flex items-center gap-1.5 text-xs font-bold text-cyan transition hover:text-white" href="https://github.com/Sinaplex/Unity-Patrol-Enemy" target="_blank" rel="noreferrer">مشاهده در GitHub <span aria-hidden="true">↗</span></a>
                 <span class="text-[10px] text-slate-500">نمونه پروژه</span>
@@ -606,7 +1026,7 @@
             </div>
           </article>
 
-          <article class="project-card reveal" data-category="2d">
+          <article class="project-card reveal" data-category="2d" style="--d:.08s">
             <a class="project-cover" href="https://github.com/Sinaplex" target="_blank" rel="noreferrer" aria-label="مشاهده پروژه‌های Sina Plex در GitHub، ماجراجویی در هزارتو">
               <img src="assets/projects/maze-adventure.webp" alt="کاور هنری برای بازی ماجراجویی در هزارتو" width="1280" height="720" loading="lazy" decoding="async">
               <span class="project-type">Unity · ماجراجویی</span>
@@ -618,7 +1038,11 @@
                 <span class="pt-1 text-[11px] font-bold text-slate-600" dir="ltr">02</span>
               </div>
               <p class="project-description mt-2">ایده‌ی یک بازی ماز با مراحل مختلف، دشمن‌ها، تله‌ها و قابلیت‌هایی برای بازیکن؛ مناسب برای نمایش سیستم‌های گیم‌پلی.</p>
-              <div class="mt-4 flex flex-wrap gap-1.5"><span class="tech-chip" dir="ltr">Unity</span><span class="tech-chip" dir="ltr">C#</span><span class="tech-chip">طراحی مرحله</span></div>
+              <div class="mt-4 flex flex-wrap gap-1.5">
+                <span class="tech-chip" dir="ltr">Unity</span>
+                <span class="tech-chip" dir="ltr">C#</span>
+                <span class="tech-chip">طراحی مرحله</span>
+              </div>
               <div class="mt-5 flex items-center justify-between gap-3 border-t border-white/[.07] pt-4">
                 <a class="inline-flex items-center gap-1.5 text-xs font-bold text-cyan transition hover:text-white" href="https://github.com/Sinaplex" target="_blank" rel="noreferrer">پروفایل GitHub <span aria-hidden="true">↗</span></a>
                 <span class="text-[10px] text-slate-500">بازی‌سازی</span>
@@ -626,7 +1050,7 @@
             </div>
           </article>
 
-          <article class="project-card reveal" data-category="3d">
+          <article class="project-card reveal" data-category="3d" style="--d:.16s">
             <a class="project-cover" href="https://github.com/Sinaplex" target="_blank" rel="noreferrer" aria-label="مشاهده پروژه‌های Sina Plex در GitHub، نمونه بازی آنلاین سه‌بعدی">
               <img src="assets/projects/online-arena.webp" alt="کاور هنری برای نمونه بازی آنلاین سه‌بعدی" width="1280" height="720" loading="lazy" decoding="async">
               <span class="project-type">Unity · سه‌بعدی</span>
@@ -638,7 +1062,11 @@
                 <span class="pt-1 text-[11px] font-bold text-slate-600" dir="ltr">03</span>
               </div>
               <p class="project-description mt-2">نمونه‌ای چندنفره برای نمایش حرکت بازیکن، سیستم شبکه و هماهنگی وضعیت بازی در یک محیط سه‌بعدی.</p>
-              <div class="mt-4 flex flex-wrap gap-1.5"><span class="tech-chip" dir="ltr">Unity</span><span class="tech-chip" dir="ltr">C#</span><span class="tech-chip">Multiplayer</span></div>
+              <div class="mt-4 flex flex-wrap gap-1.5">
+                <span class="tech-chip" dir="ltr">Unity</span>
+                <span class="tech-chip" dir="ltr">C#</span>
+                <span class="tech-chip">Multiplayer</span>
+              </div>
               <div class="mt-5 flex items-center justify-between gap-3 border-t border-white/[.07] pt-4">
                 <a class="inline-flex items-center gap-1.5 text-xs font-bold text-cyan transition hover:text-white" href="https://github.com/Sinaplex" target="_blank" rel="noreferrer">پروفایل GitHub <span aria-hidden="true">↗</span></a>
                 <span class="text-[10px] text-slate-500">نمونه پروژه</span>
@@ -648,45 +1076,58 @@
         </div>
       </section>
 
-      <section id="process" class="mx-auto max-w-6xl px-5 py-14 sm:px-7 md:py-20 lg:px-8">
+      <!-- ================= روش کار ================= -->
+      <section id="process" class="mx-auto max-w-6xl scroll-mt-28 px-5 py-14 sm:px-7 md:py-20 lg:px-8">
         <div class="mb-8 reveal">
           <p class="section-kicker">از ایده تا اجرا</p>
           <h2 class="section-title mt-2">روش کار من</h2>
         </div>
         <div class="grid gap-4 md:grid-cols-3">
-          <article class="glass-panel reveal rounded-3xl p-6">
-            <span class="text-xs font-extrabold tracking-widest text-cyan" dir="ltr">01 / PLAN</span>
-            <h3 class="mt-3 text-lg font-bold text-white">تعریف مکانیک</h3>
-            <p class="mt-2 text-sm leading-7 text-slate-400">هدف بازی و رفتارهای موردنیاز را روشن می‌کنم و ایده را به بخش‌های کوچک و قابل‌اجرا می‌شکنم.</p>
+          <article class="glass-panel spotlight reveal rounded-3xl p-6">
+            <span class="relative z-10 text-xs font-extrabold tracking-widest text-cyan" dir="ltr">01 / PLAN</span>
+            <h3 class="relative z-10 mt-3 text-lg font-bold text-white">تعریف مکانیک</h3>
+            <p class="relative z-10 mt-2 text-sm leading-7 text-slate-400">هدف بازی و رفتارهای موردنیاز را روشن می‌کنم و ایده را به بخش‌های کوچک و قابل‌اجرا می‌شکنم.</p>
           </article>
-          <article class="glass-panel reveal rounded-3xl p-6">
-            <span class="text-xs font-extrabold tracking-widest text-cyan" dir="ltr">02 / BUILD</span>
-            <h3 class="mt-3 text-lg font-bold text-white">ساخت نمونه اولیه</h3>
-            <p class="mt-2 text-sm leading-7 text-slate-400">با Unity و C# اجزای اصلی گیم‌پلی را پیاده‌سازی می‌کنم تا ایده سریع قابل‌آزمایش شود.</p>
+          <article class="glass-panel spotlight reveal rounded-3xl p-6" style="--d:.08s">
+            <span class="relative z-10 text-xs font-extrabold tracking-widest text-cyan" dir="ltr">02 / BUILD</span>
+            <h3 class="relative z-10 mt-3 text-lg font-bold text-white">ساخت نمونه اولیه</h3>
+            <p class="relative z-10 mt-2 text-sm leading-7 text-slate-400">با Unity و C# اجزای اصلی گیم‌پلی را پیاده‌سازی می‌کنم تا ایده سریع قابل‌آزمایش شود.</p>
           </article>
-          <article class="glass-panel reveal rounded-3xl p-6">
-            <span class="text-xs font-extrabold tracking-widest text-cyan" dir="ltr">03 / REFINE</span>
-            <h3 class="mt-3 text-lg font-bold text-white">تست و بهبود</h3>
-            <p class="mt-2 text-sm leading-7 text-slate-400">رفتارها را بررسی می‌کنم، بازخورد می‌گیرم و جزئیات تجربه را مرحله‌به‌مرحله بهتر می‌کنم.</p>
+          <article class="glass-panel spotlight reveal rounded-3xl p-6" style="--d:.16s">
+            <span class="relative z-10 text-xs font-extrabold tracking-widest text-cyan" dir="ltr">03 / REFINE</span>
+            <h3 class="relative z-10 mt-3 text-lg font-bold text-white">تست و بهبود</h3>
+            <p class="relative z-10 mt-2 text-sm leading-7 text-slate-400">رفتارها را بررسی می‌کنم، بازخورد می‌گیرم و جزئیات تجربه را مرحله‌به‌مرحله بهتر می‌کنم.</p>
           </article>
         </div>
       </section>
 
+      <!-- ================= ارتباط ================= -->
       <section id="contact" class="mx-auto max-w-6xl scroll-mt-28 px-5 py-14 sm:px-7 md:py-20 lg:px-8">
         <div class="glass-panel reveal relative overflow-hidden rounded-[28px] p-6 sm:p-9 md:p-11">
           <div class="pointer-events-none absolute -left-16 -top-24 h-64 w-64 rounded-full bg-blue-500/10 blur-3xl" aria-hidden="true"></div>
           <div class="pointer-events-none absolute -bottom-20 right-1/3 h-52 w-52 rounded-full bg-cyan/10 blur-3xl" aria-hidden="true"></div>
+
           <div class="relative grid items-center gap-8 md:grid-cols-[1fr_auto]">
             <div>
               <p class="section-kicker">ارتباط و همکاری</p>
-              <h2 class="mt-2 text-2xl font-extrabold leading-relaxed text-white sm:text-3xl">برای ساختن ایده‌ی بعدی،<br class="hidden sm:block"> آماده‌ام گفتگو کنیم.</h2>
+              <h2 class="mt-2 text-2xl font-extrabold leading-relaxed text-white sm:text-3xl">
+                برای ساختن ایده‌ی بعدی،<br class="hidden sm:block"> آماده‌ام گفتگو کنیم.
+              </h2>
               <p class="mt-3 max-w-xl text-sm leading-7 text-slate-300">برای همکاری، پرسش درباره پروژه‌ها یا گفت‌وگو درباره بازی‌سازی از راه‌های زیر با من در ارتباط باش.</p>
-              <a class="btn-primary mt-6" href="mailto:sinaplex0@gmail.com">
-                ارسال ایمیل
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6h16v12H4zM4 7l8 6 8-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </a>
+
+              <div class="mt-6 flex flex-wrap items-center gap-3">
+                <a class="btn-primary" href="mailto:sinaplex0@gmail.com">
+                  ارسال ایمیل
+                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6h16v12H4zM4 7l8 6 8-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+                <button id="copy-email" class="btn-secondary" type="button" data-email="sinaplex0@gmail.com">
+                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" stroke-linecap="round"/></svg>
+                  کپی ایمیل
+                </button>
+              </div>
             </div>
-            <div class="flex flex-wrap gap-2.5 md:max-w-[270px] md:justify-end">
+
+            <div class="flex flex-wrap gap-2.5 md:max-w-[280px] md:justify-end">
               <a class="social-link" href="https://github.com/Sinaplex" target="_blank" rel="noreferrer" aria-label="پروفایل Sina Plex در GitHub">
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.55.1.76-.24.76-.53v-2.08c-3.1.68-3.76-1.32-3.76-1.32-.5-1.3-1.24-1.65-1.24-1.65-1.02-.7.08-.69.08-.69 1.13.08 1.72 1.16 1.72 1.16 1 1.71 2.62 1.22 3.26.93.1-.72.39-1.22.71-1.5-2.48-.28-5.09-1.24-5.09-5.51 0-1.22.44-2.22 1.16-3-.12-.28-.5-1.42.11-2.96 0 0 .95-.3 3.05 1.15a10.6 10.6 0 0 1 5.55 0c2.1-1.45 3.04-1.15 3.04-1.15.61 1.54.23 2.68.12 2.96.72.78 1.15 1.78 1.15 3.01 0 4.28-2.61 5.22-5.1 5.5.4.35.75 1.03.75 2.08V22c0 .29.2.64.77.53A11.1 11.1 0 0 0 12 .9Z"/></svg>
                 GitHub
@@ -705,6 +1146,7 @@
       </section>
     </main>
 
+    <!-- ================= فوتر ================= -->
     <footer class="mx-auto max-w-6xl px-5 pb-8 pt-2 text-xs text-slate-500 sm:px-7 lg:px-8">
       <div class="flex flex-col gap-3 border-t border-white/10 pt-5 sm:flex-row sm:items-center sm:justify-between">
         <span>© <span id="year"></span> <span dir="ltr">Sina Plex</span> — ساخته‌شده با علاقه به بازی‌سازی</span>
@@ -713,74 +1155,182 @@
     </footer>
   </div>
 
-  <script>
-    const year = document.getElementById('year');
-    if (year) year.textContent = new Date().getFullYear();
+  <!-- دکمه بازگشت به بالا و توست -->
+  <button id="to-top" class="to-top" type="button" aria-label="بازگشت به بالای صفحه">
+    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M12 19V5m0 0-6 6m6-6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-    // Mobile navigation
+  <script>
+    /* ---------- سال ---------- */
+    const yearEl = document.getElementById('year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+    /* ---------- منوی موبایل ---------- */
     const menuToggle = document.getElementById('menu-toggle');
     const mobileMenu = document.getElementById('mobile-menu');
     const menuOpenIcon = document.getElementById('menu-open-icon');
     const menuCloseIcon = document.getElementById('menu-close-icon');
+
     if (menuToggle && mobileMenu) {
-      const closeMenu = () => {
-        mobileMenu.classList.add('hidden');
-        menuToggle.setAttribute('aria-expanded', 'false');
-        menuToggle.setAttribute('aria-label', 'باز کردن منو');
-        menuOpenIcon?.classList.remove('hidden');
-        menuCloseIcon?.classList.add('hidden');
+      const setMenu = (open) => {
+        mobileMenu.classList.toggle('is-open', open);
+        menuToggle.setAttribute('aria-expanded', String(open));
+        menuToggle.setAttribute('aria-label', open ? 'بستن منو' : 'باز کردن منو');
+        menuOpenIcon?.classList.toggle('hidden', open);
+        menuCloseIcon?.classList.toggle('hidden', !open);
       };
       menuToggle.addEventListener('click', () => {
-        const opening = menuToggle.getAttribute('aria-expanded') !== 'true';
-        mobileMenu.classList.toggle('hidden', !opening);
-        menuToggle.setAttribute('aria-expanded', String(opening));
-        menuToggle.setAttribute('aria-label', opening ? 'بستن منو' : 'باز کردن منو');
-        menuOpenIcon?.classList.toggle('hidden', opening);
-        menuCloseIcon?.classList.toggle('hidden', !opening);
+        setMenu(menuToggle.getAttribute('aria-expanded') !== 'true');
       });
-      mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
-      document.addEventListener('keydown', event => { if (event.key === 'Escape') closeMenu(); });
+      mobileMenu.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => setMenu(false)));
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') setMenu(false);
+      });
+      window.addEventListener('resize', () => {
+        if (window.innerWidth >= 1024) setMenu(false);
+      }, { passive: true });
     }
 
-    // Project filters
+    /* ---------- فیلتر پروژه‌ها ---------- */
     const filterButtons = [...document.querySelectorAll('[data-filter]')];
     const projectCards = [...document.querySelectorAll('#project-grid [data-category]')];
     const projectCount = document.getElementById('project-count');
-    filterButtons.forEach(button => {
+
+    filterButtons.forEach((button) => {
       button.addEventListener('click', () => {
         const filter = button.dataset.filter;
         let visible = 0;
-        filterButtons.forEach(item => {
+
+        filterButtons.forEach((item) => {
           const active = item === button;
           item.classList.toggle('is-active', active);
           item.setAttribute('aria-pressed', String(active));
         });
-        projectCards.forEach(card => {
+
+        projectCards.forEach((card) => {
           const show = filter === 'all' || card.dataset.category === filter;
           card.classList.toggle('hidden', !show);
-          if (show) visible++;
+          if (show) {
+            visible++;
+            card.style.animation = 'none';
+            void card.offsetWidth; // reflow برای اجرای مجدد انیمیشن
+            card.style.animation = 'card-in .45s cubic-bezier(.22,.75,.2,1) both';
+          }
         });
+
         if (projectCount) projectCount.textContent = `${visible.toLocaleString('fa-IR')} پروژه`;
       });
     });
 
-    // Reveal content as it enters the viewport; keep everything visible if the API is unavailable.
+    /* استایل انیمیشن ورود کارت‌ها (تزریق‌شده) */
+    const styleTag = document.createElement('style');
+    styleTag.textContent = '@keyframes card-in{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}';
+    document.head.appendChild(styleTag);
+
+    /* ---------- ریویل با IntersectionObserver ---------- */
     const revealItems = document.querySelectorAll('.reveal');
     if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       const revealObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
+        entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('is-visible');
             observer.unobserve(entry.target);
           }
         });
-      }, { threshold: 0.12 });
-      revealItems.forEach(item => revealObserver.observe(item));
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+      revealItems.forEach((item) => revealObserver.observe(item));
     } else {
-      revealItems.forEach(item => item.classList.add('is-visible'));
+      revealItems.forEach((item) => item.classList.add('is-visible'));
     }
 
-    // Lightweight ambient particles that match the original blue/cyan theme.
+    /* ---------- اسکرول‌اسپای منو ---------- */
+    (() => {
+      const links = [...document.querySelectorAll('[data-spy]')];
+      if (!links.length || !('IntersectionObserver' in window)) return;
+
+      const map = new Map();
+      links.forEach((link) => {
+        const section = document.querySelector(link.getAttribute('href'));
+        if (section) map.set(section, link);
+      });
+
+      const spyObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          const link = map.get(entry.target);
+          if (!link) return;
+          if (entry.isIntersecting) {
+            links.forEach((item) => item.classList.remove('is-active'));
+            link.classList.add('is-active');
+          }
+        });
+      }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+
+      map.forEach((_, section) => spyObserver.observe(section));
+    })();
+
+    /* ---------- نور دنبال‌کننده موس روی پنل‌ها ---------- */
+    (() => {
+      const targets = document.querySelectorAll('.spotlight, .project-card');
+      targets.forEach((el) => {
+        el.addEventListener('pointermove', (event) => {
+          const rect = el.getBoundingClientRect();
+          el.style.setProperty('--mx', `${event.clientX - rect.left}px`);
+          el.style.setProperty('--my', `${event.clientY - rect.top}px`);
+        }, { passive: true });
+      });
+    })();
+
+    /* ---------- کپی ایمیل + توست ---------- */
+    (() => {
+      const copyBtn = document.getElementById('copy-email');
+      const toast = document.getElementById('toast');
+      let toastTimer;
+
+      const showToast = (message) => {
+        if (!toast) return;
+        toast.textContent = message;
+        toast.classList.add('is-visible');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('is-visible'), 2400);
+      };
+
+      copyBtn?.addEventListener('click', async () => {
+        const email = copyBtn.dataset.email || '';
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(email);
+          } else {
+            const temp = document.createElement('textarea');
+            temp.value = email;
+            temp.setAttribute('readonly', '');
+            temp.style.position = 'fixed';
+            temp.style.opacity = '0';
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+          }
+          showToast('ایمیل کپی شد ✓');
+        } catch {
+          showToast('کپی نشد؛ ایمیل: ' + email);
+        }
+      });
+    })();
+
+    /* ---------- دکمه بازگشت به بالا ---------- */
+    (() => {
+      const toTop = document.getElementById('to-top');
+      if (!toTop) return;
+      const toggle = () => toTop.classList.toggle('is-visible', window.scrollY > 560);
+      window.addEventListener('scroll', toggle, { passive: true });
+      toTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      });
+      toggle();
+    })();
+
+    /* ---------- ذرات محیطی + نوار پیشرفت ---------- */
     (() => {
       const canvas = document.getElementById('ambient-canvas');
       const context = canvas?.getContext('2d', { alpha: true });
@@ -803,13 +1353,14 @@
         canvas.style.width = `${width}px`;
         canvas.style.height = `${height}px`;
         context.setTransform(dpr, 0, 0, dpr, 0, 0);
-        const count = Math.min(width < 600 ? 42 : 84, Math.max(width < 600 ? 28 : 54, Math.floor(width / (width < 600 ? 10 : 15))));
+
+        const count = Math.min(width < 600 ? 42 : 84, Math.max(width < 600 ? 26 : 52, Math.floor(width / (width < 600 ? 10 : 15))));
         particles = Array.from({ length: count }, () => ({
           x: Math.random() * width,
           y: Math.random() * height,
-          vx: (Math.random() - .5) * .25,
-          vy: (Math.random() - .5) * .25,
-          radius: Math.random() * 1.1 + .55,
+          vx: (Math.random() - 0.5) * 0.25,
+          vy: (Math.random() - 0.5) * 0.25,
+          radius: Math.random() * 1.1 + 0.55,
           phase: Math.random() * Math.PI * 2
         }));
         draw();
@@ -817,11 +1368,12 @@
 
       function draw() {
         context.clearRect(0, 0, width, height);
+
         particles.forEach((particle, index) => {
-          particle.phase += .01;
+          particle.phase += 0.01;
           if (!reducedMotion) {
-            particle.x += particle.vx + Math.sin(particle.phase) * .045;
-            particle.y += particle.vy + Math.cos(particle.phase * .7) * .045;
+            particle.x += particle.vx + Math.sin(particle.phase) * 0.045;
+            particle.y += particle.vy + Math.cos(particle.phase * 0.7) * 0.045;
           }
           if (particle.x < -8) particle.x = width + 8;
           if (particle.x > width + 8) particle.x = -8;
@@ -832,6 +1384,7 @@
           context.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
           context.fillStyle = index % 4 === 0 ? 'rgba(86,224,224,.7)' : 'rgba(125,157,255,.52)';
           context.fill();
+
           for (let otherIndex = index + 1; otherIndex < particles.length; otherIndex++) {
             const other = particles[otherIndex];
             const distance = Math.hypot(particle.x - other.x, particle.y - other.y);
@@ -839,25 +1392,28 @@
               context.beginPath();
               context.moveTo(particle.x, particle.y);
               context.lineTo(other.x, other.y);
-              context.strokeStyle = `rgba(91,174,232,${(1 - distance / 86) * .12})`;
-              context.lineWidth = .6;
+              context.strokeStyle = `rgba(91,174,232,${(1 - distance / 86) * 0.12})`;
+              context.lineWidth = 0.6;
               context.stroke();
             }
           }
         });
+
         if (!reducedMotion && document.visibilityState === 'visible') frame = requestAnimationFrame(draw);
       }
 
       function updateProgress() {
         const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-        if (progress) progress.style.transform = `scaleX(${maxScroll > 0 ? window.scrollY / maxScroll : 0})`;
+        if (progress) progress.style.transform = `scaleX(${maxScroll > 0 ? Math.min(window.scrollY / maxScroll, 1) : 0})`;
       }
+
       window.addEventListener('resize', resize, { passive: true });
       window.addEventListener('scroll', updateProgress, { passive: true });
       document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'hidden') cancelAnimationFrame(frame);
         else if (!reducedMotion) draw();
       });
+
       resize();
       updateProgress();
     })();
